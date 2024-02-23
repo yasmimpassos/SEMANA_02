@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--diferença entre .min.js e .js-->
+    <!--por que aqui estamos usando um "endereço web" dentro de uma tag "script"?-->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <title>Exercício do Pássaro</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;  }
+    </style>
+</head>
+<body>
+
+<script>
+
+    //o que o config faz?
+    var config = {
+        type: Phaser.AUTO,
+        width: 800,
+        height: 600,
+
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    };
+
+    var game = new Phaser.Game(config);
+
+    var passarinho;
+
+    //o que a função preload() faz?
+    //onde você deve carregar todos os seus ativos de mídia antes de o jogo ser criado.
+    function preload() {
+        //image: um objeto estático, sem animação ou propriedades fisicas.
+        this.load.image('bg', 'assets/fundo_ceu.avif');
+        //sprite: tipo de objeto que suporta animações, colisões, eventos e interações.
+        this.load.spritesheet('bird','assets/bird-red.png', {frameWidth: 75, frameHeight: 75});
+    }
+
+    //o que a função create() faz?
+    function create() {
+        this.add.image(400, 300, 'bg').setScale(1.5);
+        passarinho = this.add.sprite(100, 200, 'bird').setScale(1.3);
+
+        this.anims.create({
+            key: 'fly',
+            frames: this.anims.generateFrameNumbers('bird', { start: 0, end: 7}),
+            frameRate: 10, //quantidade de frames em 1 segundo
+            repeat: -1 //-1 indica repetição contínua
+        });
+
+        //poderia usar apenas passarinho.play??
+        passarinho.anims.play('fly', true);
+
+    
+        /*plane = this.add.sprite(640, 360, "plane");
+        plane.play("fly");
+
+        setTimeout(() => {
+            plane.play("explode");
+        }, 3000);*/
+
+        /*plane = this.add.sprite(640, 360, "plane");
+        plane.play("fly");
+
+        this.time.addEvent({
+        delay: 3000,
+        callback: () => {
+            plane.play("explode");
+        }
+    });*/
+    }
+
+    //o que a função update() faz?
+    function update() { 
+
+        // oq faz?
+        if (passarinho.x === 100) {
+            passarinho.setFlip (false, false);
+            passarinho.ida = true;
+        }
+
+        // oq faz?
+        if (passarinho.x < 700 && passarinho.ida === true) {
+            //console.log("o que acontece?");
+            passarinho.x += 5;
+        }
+
+         // oq faz?
+         if (passarinho.x === 700) {
+            passarinho.setFlip (true, false);
+            passarinho.ida = false;
+        }
+
+        // oq faz?
+        if (passarinho.x > 100 && passarinho.ida === false) {
+            //console.log("o que acontece?");
+            passarinho.x -= 5;
+        }
+
+        // oq faz?
+        if (passarinho.y === 200) {
+            
+            passarinho.subida = true;
+        }
+
+        // oq faz?
+        if (passarinho.y < 400 && passarinho.subida === true) {
+            //console.log("o que acontece?");
+            passarinho.y += 5;
+        }
+
+         // oq faz?
+         if (passarinho.y === 400) {
+            
+            passarinho.subida = false;
+        }
+
+        // oq faz?
+        if (passarinho.y > 200 && passarinho.subida === false) {
+            //console.log("o que acontece?");
+            passarinho.y -= 5;
+        }
+    }
+
+</script>
+
+</body>
+</html>
+
+<!--1. Organize e comente seu código!
+Dedique um tempo para organizar espaçamentos e identações. Adicione comentários explicativos ao longo do código - aqui, quanto mais detalhado melhor! Isso garante que você tenha entendido todas as partes da estrutura. O que descobrir de dúvidas, deixe anotado em seu arquivo.
+
+2. Implemente o movimento de passarinho.y
+Agora que elaboramos uma lógica de movimento para o passarinho no eixo x da tela do nosso jogo, crie uma lógica que faça o passarinho também se movimentar no eixo y. Você pode modificar a lógica do eixo x, se preferir. O passarinho deve se movimentar em um loop contínuo.
+
+3. Publique no GitHub Individual e envie o link na Adalove
+Publique o resultado do exercício em seu GitHub Individual, de maneira organizada. Envie o link do projeto no card da Adalove.-->
+
+<!--É importante observar que interromper uma animação não remove o sprite. Falaremos disso mais tarde. Então, isso significa que quando uma animação parar, o sprite permanecerá ali, aparecendo congelado na tela.-->
+
+<!--devido a considerações de taxa de quadros, o this.time.addEventpode ser o caminho correto a seguir, pois pode fazer cálculos que setTimeoutnão o fazem.-->
